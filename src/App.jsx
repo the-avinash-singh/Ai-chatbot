@@ -7,6 +7,7 @@ import "./App.css";
 function App() {
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef(null);
 
   const sendMessage = async () => {
@@ -16,10 +17,15 @@ function App() {
     const newChat = [...chat, userMessage];
     setChat(newChat);
     setMessage('');
+    setIsLoading(true);
 
-    const botMessageText = await sendMessageToChatGPT(newChat);
-    const botMessage = { role: 'assistant', content: botMessageText };
-    setChat((prevChat) => [...prevChat, botMessage]);
+    try {
+      const botMessageText = await sendMessageToChatGPT(newChat);
+      const botMessage = { role: 'assistant', content: botMessageText };
+      setChat((prevChat) => [...prevChat, botMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -31,7 +37,7 @@ function App() {
       <div className="chat-header bg-success text-white p-3">
         <h1 className="m-0 fw-bold"><span className='brand'>devDeejay</span>.in</h1>
       </div>
-      <div className="chat-body bg-light flex-grow-1 d-flex justify-content-center align-items-center">
+      <div className="chat-body mt-4 bg-light flex-grow-1">
         <div className="chat-messages card p-3 bg-white mx-2 mx-md-4 mx-lg-5">
           <ul className='list-unstyled'>
             {chat.map((msg, index) => (
@@ -41,6 +47,13 @@ function App() {
                 </div>
               </li>
             ))}
+            {isLoading && (
+              <li className="message bot-message mb-2">
+                <div className="message-bubble p-2 rounded">
+                  <div className="loader mx-2"></div>
+                </div>
+              </li>
+            )}
             <div ref={chatEndRef} />
           </ul>
         </div>
