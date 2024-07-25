@@ -30,7 +30,7 @@ function App() {
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [chat]);
+  }, [chat, isLoading]);
 
   return (
     <div className='d-flex flex-column bg-light full-width'>
