@@ -6,7 +6,7 @@ import "./App.css";
 
 function App() {
   const [message, setMessage] = useState('');
-  const [chat, setChat] = useState([]);
+  const [chat, setChat] = useState([{ role: 'assistant', content: "Hi how may I help you!!" }]);
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef(null);
 
@@ -37,7 +37,7 @@ function App() {
       <div className="chat-header bg-success text-white p-3">
         <h1 className="m-0 fw-bold"><span className='brand'>devDeejay</span>.in</h1>
       </div>
-      <div className="chat-body align-self-center bg-light flex-grow-1">
+      <div className="chat-body mt-sm-3 align-self-center bg-light flex-grow-1">
         <div className="chat-messages card p-3 bg-white mx-2 mx-md-4 mx-lg-5">
           <ul className='list-unstyled'>
             {chat.map((msg, index) => (
@@ -61,6 +61,7 @@ function App() {
       <div className='chat-input bg-white p-3 mt-3 mt-md-0 d-flex align-items-center'>
         <input 
           type='text'
+          placeholder='Ask your question...'
           value={message}
           className='form-control me-2'
           onChange={(e) => setMessage(e.target.value)}

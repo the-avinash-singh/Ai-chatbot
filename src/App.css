@@ -64,7 +64,7 @@ button {
 }
 
 .message-bubble {
-    max-width: 60%;
+    max-width: 65%;
     width: fit-content;
     padding: 10px;
     border-radius: 20px;
@@ -98,5 +98,11 @@ button {
     .chat-body{
         width: 70% !important;
         margin: 0 auto;
+    }
+}
+@media  (min-width:500px) {
+    
+    .full-width {
+        min-height: 98dvh ;
     }
 }
