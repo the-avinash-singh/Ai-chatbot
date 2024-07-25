@@ -1,51 +1,63 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { sendMessageToChatGPT } from './api/openai';
 import { IoSend } from "react-icons/io5";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.min.js";
-import "./App.css"
+import "./App.css";
 
 function App() {
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState([]);
+  const chatEndRef = useRef(null);
 
   const sendMessage = async () => {
     if (!message.trim()) return;
 
-    const userMessage = { sender: 'user', text: message };
-    setChat((prevChat) => [...prevChat, userMessage]);
+    const userMessage = { role: 'user', content: message };
+    const newChat = [...chat, userMessage];
+    setChat(newChat);
     setMessage('');
 
-    const botMessageText = await sendMessageToChatGPT(message);
-    const botMessage = { sender: 'bot', text: botMessageText };
+    const botMessageText = await sendMessageToChatGPT(newChat);
+    const botMessage = { role: 'assistant', content: botMessageText };
     setChat((prevChat) => [...prevChat, botMessage]);
   };
 
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chat]);
+
   return (
-    <div className='d-flex flex-column bg-dark full-width'>
-      <h1 className='text-white'>Chat with Us</h1>
-      <div className="card pt-4 bg-black mx-2 mx-md-4 mx-lg-5">
-      <ul className='d-flex flex-column text-white list-unstyled'>
-        {chat.map((msg, index) => (
-          <li key={index} className='d-flex'>
-            {msg.sender=='bot'? <div className=" shadow text-width bg-dark mt-2 p-2 rounded">{msg.sender}: {msg.text}</div>: <div className="shadow user-text text-width mt-2 p-2 rounded ms-auto text-end">{msg.sender}: {msg.text}</div>}
-          </li>
-        ))}
-      </ul>
+    <div className='d-flex flex-column bg-light full-width'>
+      <div className="chat-header bg-success text-white p-3">
+        <h1 className="m-0 fw-bold"><span className='brand'>devDeejay</span>.in</h1>
       </div>
-      <div className='mx-2 mt-3 mx-md-4 mx-lg-5 d-flex justify-content-between align-items-center bg-white rounded'>
-      <input 
-      type='text'
-        value={message}
-        className='text-black w-75 rounded'
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') sendMessage();
-        }}
-      />
-      <button className='bg-dark button btn' onClick={sendMessage}>
-      <IoSend />
-      </button>
+      <div className="chat-body bg-light flex-grow-1 d-flex justify-content-center align-items-center">
+        <div className="chat-messages card p-3 bg-white mx-2 mx-md-4 mx-lg-5">
+          <ul className='list-unstyled'>
+            {chat.map((msg, index) => (
+              <li key={index} className={`message ${msg.role === 'assistant' ? 'bot-message' : 'user-message'} mb-2`}>
+                <div className="message-bubble p-2 px-3 rounded">
+                  {msg.content}
+                </div>
+              </li>
+            ))}
+            <div ref={chatEndRef} />
+          </ul>
+        </div>
+      </div>
+      <div className='chat-input bg-white p-3 d-flex align-items-center'>
+        <input 
+          type='text'
+          value={message}
+          className='form-control me-2'
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') sendMessage();
+          }}
+        />
+        <button className='btn btn-success w-auto pb-2 rounded-circle' onClick={sendMessage}>
+          <IoSend />
+        </button>
       </div>
     </div>
   );
