@@ -33,12 +33,13 @@ function App() {
   }, [chat, isLoading]);
 
   return (
+    <>
     <div className='d-flex flex-column bg-light full-width'>
-      <div className="chat-header bg-success text-white p-3">
+      <div className="chat-header bg-success text-white p-3 position-sticky top-0 z-1">
         <h1 className="m-0 fw-bold"><span className='brand'>devDeejay</span>.in</h1>
       </div>
-      <div className="chat-body mt-sm-3 align-self-center bg-light flex-grow-1">
-        <div className="chat-messages card p-3 bg-white mx-2 mx-md-4 mx-lg-5">
+      <div className="chat-body d-flex justify-content-center align-items-center bg-light flex-grow-1">
+        <div className="chat-messages w-100 d-flex flex-column-reverse card p-3 bg-white mx-2 mx-md-4 mx-lg-5">
           <ul className='list-unstyled'>
             {chat.map((msg, index) => (
               <li key={index} className={`message ${msg.role === 'assistant' ? 'bot-message' : 'user-message'} mb-2`}>
@@ -58,7 +59,7 @@ function App() {
           </ul>
         </div>
       </div>
-      <div className='chat-input bg-white p-3 mt-3 mt-md-0 d-flex align-items-center'>
+      <div className='chat-input bg-white p-3 d-flex align-items-center'>
         <input 
           type='text'
           placeholder='Ask your question...'
@@ -74,6 +75,7 @@ function App() {
         </button>
       </div>
     </div>
+    </>
   );
 }
 
